@@ -22,6 +22,11 @@ class Index extends Component
         $post->delete();
     }
 
+    public function paginationView(): string
+    {
+        return 'livewire.partials.pagination';
+    }
+
     public function render()
     {
         return view('livewire.admin.posts.index', [

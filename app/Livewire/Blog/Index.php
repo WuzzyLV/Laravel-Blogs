@@ -10,6 +10,11 @@ class Index extends Component
 {
     use WithPagination;
 
+    public function paginationView(): string
+    {
+        return 'livewire.partials.pagination';
+    }
+
     public function render()
     {
         return view('livewire.blog.index', [
