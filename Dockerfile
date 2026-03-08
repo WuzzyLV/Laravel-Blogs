@@ -1,14 +1,4 @@
 # ============================================================
-# Stage 0 — Composer: install vendor deps (needed for Flux CSS)
-# ============================================================
-FROM composer:2 AS composer
-
-WORKDIR /app
-
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-# ============================================================
 # Stage 1 — Node: compile frontend assets
 # ============================================================
 FROM node:22-alpine AS assets
@@ -18,7 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY --from=composer /app/vendor vendor/
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
 COPY resources/ resources/
 COPY vite.config.js ./
@@ -27,51 +19,69 @@ COPY public/ public/
 RUN npm run build
 
 # ============================================================
-# Stage 2 — PHP-FPM: application
+# Stage 2 — PHP: application (Ubuntu + ondrej/php PPA)
 # ============================================================
-FROM php:8.4-fpm-alpine AS app
+FROM ubuntu:24.04 AS app
 
-# Install system dependencies + PHP extensions
-RUN apk add --no-cache \
-        nginx \
-        supervisor \
-        curl \
-        unzip \
-        sqlite-dev \
-    && docker-php-ext-install \
-        pdo_sqlite \
-        bcmath \
-        pcntl \
-    && docker-php-ext-enable opcache
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Add ondrej/php PPA and install PHP 8.4 + required extensions + Nginx + Supervisor
+RUN apt-get update \
+    && apt-get install -y gnupg curl ca-certificates unzip sqlite3 nginx supervisor \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xb8dc7e53946656efbce4c1dd71daeaab4ad4cab6' \
+       | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" \
+       > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+    && apt-get update \
+    && apt-get install -y \
+       php8.4-fpm \
+       php8.4-cli \
+       php8.4-sqlite3 \
+       php8.4-mbstring \
+       php8.4-xml \
+       php8.4-zip \
+       php8.4-bcmath \
+       php8.4-curl \
+       php8.4-intl \
+       php8.4-opcache \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy composer files first for layer caching
+# Install PHP dependencies
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN mkdir -p bootstrap/cache \
+    && composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-# Copy the rest of the application
+# Copy application
 COPY . .
 
 # Copy compiled assets from Stage 1
 COPY --from=assets /app/public/build public/build
 
-# Ensure bootstrap/cache exists before composer scripts run
-RUN mkdir -p bootstrap/cache
-
-# Finish composer (dump autoload, run scripts)
+# Finalise composer
 RUN composer dump-autoload --optimize --no-dev
 
 # Copy config files
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh \
-    && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+    && mkdir -p storage/logs \
+                storage/framework/cache \
+                storage/framework/sessions \
+                storage/framework/views \
+                bootstrap/cache \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 

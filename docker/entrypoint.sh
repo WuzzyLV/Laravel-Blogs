@@ -1,7 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 cd /var/www/html
+
+# Ensure php-fpm socket directory exists
+mkdir -p /run/php
 
 # Generate app key if not already set
 if [ -z "$APP_KEY" ]; then
