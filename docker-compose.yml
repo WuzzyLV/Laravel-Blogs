@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: "Blog"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8080
+      APP_KEY: ""                    # Set this or let entrypoint generate one
+      DB_CONNECTION: sqlite
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+      ADMIN_EMAIL: admin@admin.com
+      ADMIN_PASSWORD: password
+    volumes:
+      # Persist the SQLite database and uploaded images between restarts
+      - db_data:/var/www/html/database
+      - storage_data:/var/www/html/storage/app/public
+
+volumes:
+  db_data:
+  storage_data:
