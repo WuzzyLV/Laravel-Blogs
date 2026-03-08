@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "C:\\Users\\Reinis\\.config\\herd-lite\\bin\\php.exe",
+            "args": [
+                "C:\\Users\\Reinis\\Projects\\Web\\devio-blog-task\\devio-blog-task\\artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
