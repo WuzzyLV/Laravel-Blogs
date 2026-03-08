@@ -14,6 +14,13 @@ class Show extends Component
         $this->post = Post::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
+
+        $seen = session()->get('viewed_posts', []);
+
+        if (! in_array($this->post->id, $seen)) {
+            $this->post->increment('views');
+            session()->push('viewed_posts', $this->post->id);
+        }
     }
 
     public function render()

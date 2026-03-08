@@ -16,6 +16,7 @@ class Post extends Model
         'image',
         'published_at',
         'is_active',
+        'views',
     ];
 
     protected $casts = [
