@@ -1,5 +1,15 @@
 # ============================================================
-# Stage 1 — Node: compile frontend assets
+# Stage 1 — Composer: vendor deps (needed for Flux CSS in Vite)
+# ============================================================
+FROM composer:2 AS vendor
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# ============================================================
+# Stage 2 — Node: compile frontend assets
 # ============================================================
 FROM node:22-alpine AS assets
 
@@ -8,10 +18,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
+COPY --from=vendor /app/vendor vendor/
 COPY resources/ resources/
 COPY vite.config.js ./
 COPY public/ public/
