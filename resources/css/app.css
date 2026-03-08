@@ -73,3 +73,43 @@ select:focus[data-flux-control] {
     display: flex;
     flex-direction: column;
 }
+
+/* Trix dark mode styling */
+.dark trix-toolbar {
+    background-color: var(--color-zinc-800);
+    border-color: var(--color-zinc-600);
+}
+
+.dark trix-toolbar .trix-button-group {
+    border-color: var(--color-zinc-600);
+    background: transparent;
+}
+
+.dark trix-toolbar .trix-button {
+    background: transparent;
+    border-color: var(--color-zinc-600);
+    filter: invert(1);
+}
+
+.dark trix-toolbar .trix-button:hover {
+    background-color: var(--color-zinc-700);
+}
+
+.dark trix-toolbar .trix-button.trix-active {
+    background-color: var(--color-zinc-600);
+}
+
+.dark trix-editor {
+    background-color: var(--color-zinc-800);
+    color: var(--color-zinc-100);
+    border-color: var(--color-zinc-600);
+}
+
+.dark trix-editor a {
+    color: var(--color-zinc-300);
+}
+
+.dark trix-editor blockquote {
+    border-left-color: var(--color-zinc-500);
+    color: var(--color-zinc-400);
+}
