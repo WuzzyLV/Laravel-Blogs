@@ -25,7 +25,16 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.blog.show')
+        $seen = session()->get('viewed_posts', []);
+
+        $recommendations = Post::where('is_active', true)
+            ->whereNotIn('id', $seen)
+            ->where('id', '!=', $this->post->id)
+            ->latest('published_at')
+            ->limit(3)
+            ->get();
+
+        return view('livewire.blog.show', compact('recommendations'))
             ->layout('layouts.public', ['title' => $this->post->title]);
     }
 }
