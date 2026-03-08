@@ -75,12 +75,22 @@ COPY . .
 # Copy compiled assets from Stage 1
 COPY --from=assets /app/public/build public/build
 
-# Finalise composer
-RUN composer dump-autoload --optimize --no-dev
+# Ensure all directories artisan needs exist before dump-autoload runs
+RUN mkdir -p storage/logs \
+             storage/framework/cache \
+             storage/framework/sessions \
+             storage/framework/views \
+             bootstrap/cache
+
+# Finalise composer (APP_KEY dummy so artisan can boot during package:discover)
+RUN APP_KEY=base64:dGVtcG9yYXJ5a2V5Zm9yYnVpbGRzdGFnZW9ubHk= \
+    composer dump-autoload --optimize --no-dev
 
 # Copy config files
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/php.ini /etc/php/8.4/fpm/conf.d/99-custom.ini
+COPY docker/php.ini /etc/php/8.4/cli/conf.d/99-custom.ini
 COPY docker/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh \
