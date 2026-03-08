@@ -11,6 +11,12 @@ class Index extends Component
 {
     use WithPagination;
 
+    public function toggleStatus(int $id): void
+    {
+        $post = Post::findOrFail($id);
+        $post->update(['is_active' => ! $post->is_active]);
+    }
+
     public function delete(int $id): void
     {
         $post = Post::findOrFail($id);

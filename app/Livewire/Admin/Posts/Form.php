@@ -16,7 +16,7 @@ class Form extends Component
     public string $title = '';
     public string $body = '';
     public string $published_at = '';
-    public bool $is_active = false;
+    public bool $is_active = true;
     public $image = null;
     public ?string $existingImage = null;
 

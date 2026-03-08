@@ -27,11 +27,17 @@
                             {{ $post->published_at->format('d M Y') }}
                         </td>
                         <td class="px-4 py-3">
-                            @if ($post->is_active)
-                                <flux:badge color="green">Active</flux:badge>
-                            @else
-                                <flux:badge color="zinc">Inactive</flux:badge>
-                            @endif
+                            <button
+                                wire:click="toggleStatus({{ $post->id }})"
+                                title="Toggle status"
+                                class="cursor-pointer"
+                            >
+                                @if ($post->is_active)
+                                    <flux:badge color="green" icon="check-circle">Active</flux:badge>
+                                @else
+                                    <flux:badge color="zinc" icon="x-circle">Inactive</flux:badge>
+                                @endif
+                            </button>
                         </td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex items-center justify-end gap-2">
