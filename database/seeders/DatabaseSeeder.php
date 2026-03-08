@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,9 +20,11 @@ class DatabaseSeeder extends Seeder
         }
 
         User::factory()->create([
-            'name' => 'Admin',
-            'email' => env('ADMIN_EMAIL'),
+            'name'     => 'Admin',
+            'email'    => env('ADMIN_EMAIL'),
             'password' => bcrypt($rawPass),
         ]);
+
+        Post::factory()->count(20)->create();
     }
 }
