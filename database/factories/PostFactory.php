@@ -12,17 +12,17 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title'        => fake()->sentence(rand(4, 9), true),
+            'title'        => $this->faker->sentence(rand(4, 9), true),
             'body'         => $this->fakeBody(),
             'image'        => null,
-            'published_at' => fake()->dateTimeBetween('-2 years', 'now'),
-            'is_active'    => fake()->boolean(80),
+            'published_at' => $this->faker->dateTimeBetween('-2 years', 'now'),
+            'is_active'    => $this->faker->boolean(80),
         ];
     }
 
     private function fakeBody(): string
     {
-        $paragraphs = fake()->paragraphs(rand(3, 6));
+        $paragraphs = $this->faker->paragraphs(rand(3, 6));
 
         $html = '<div>';
         foreach ($paragraphs as $p) {
