@@ -1,4 +1,14 @@
 # ============================================================
+# Stage 0 — Composer: install vendor deps (needed for Flux CSS)
+# ============================================================
+FROM composer:2 AS composer
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# ============================================================
 # Stage 1 — Node: compile frontend assets
 # ============================================================
 FROM node:22-alpine AS assets
@@ -7,6 +17,8 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
+
+COPY --from=composer /app/vendor vendor/
 
 COPY resources/ resources/
 COPY vite.config.js ./
