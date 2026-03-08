@@ -59,6 +59,9 @@ COPY . .
 # Copy compiled assets from Stage 1
 COPY --from=assets /app/public/build public/build
 
+# Ensure bootstrap/cache exists before composer scripts run
+RUN mkdir -p bootstrap/cache
+
 # Finish composer (dump autoload, run scripts)
 RUN composer dump-autoload --optimize --no-dev
 
