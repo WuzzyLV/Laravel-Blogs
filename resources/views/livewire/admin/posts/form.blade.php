@@ -33,7 +33,7 @@
                 <trix-editor
                     x-ref="trix"
                     input="trix-body"
-                    class="trix-content rounded-lg border border-neutral-300 bg-white p-3 dark:border-neutral-600 dark:bg-zinc-700 dark:text-white min-h-64"
+                    class="rounded-lg border border-neutral-300 bg-white p-3 dark:border-neutral-600 dark:bg-zinc-700 dark:text-white min-h-64"
                 ></trix-editor>
             </div>
             <flux:error name="body" />

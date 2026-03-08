@@ -1,9 +1,12 @@
 <?php
 
 use App\Livewire\Admin\Posts\Form;
+use App\Livewire\Blog\Index as BlogIndex;
+use App\Livewire\Blog\Show as BlogShow;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', BlogIndex::class)->name('home');
+Route::get('/blog/{slug}', BlogShow::class)->name('blog.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
