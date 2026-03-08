@@ -37,7 +37,7 @@ RUN apk add --no-cache \
         supervisor \
         curl \
         unzip \
-        sqlite \
+        sqlite-dev \
     && docker-php-ext-install \
         pdo_sqlite \
         bcmath \
