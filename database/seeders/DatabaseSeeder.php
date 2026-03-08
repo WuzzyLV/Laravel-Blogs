@@ -19,10 +19,11 @@ class DatabaseSeeder extends Seeder
             throw new \ErrorException('No admin password in env.');
         }
 
-        User::factory()->create([
+        User::create([
             'name'     => 'Admin',
             'email'    => env('ADMIN_EMAIL'),
             'password' => bcrypt($rawPass),
+            'email_verified_at' => now(),
         ]);
 
         Post::factory()->count(20)->create();
