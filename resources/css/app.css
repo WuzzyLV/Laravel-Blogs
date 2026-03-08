@@ -74,7 +74,29 @@ select:focus[data-flux-control] {
     flex-direction: column;
 }
 
-/* Trix dark mode styling */
+.trix-button-group--file-tools {
+    display: none !important;
+}
+
+.trix-content ul,
+trix-editor ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+}
+
+.trix-content ol,
+trix-editor ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+}
+
+.trix-content li,
+trix-editor li {
+    margin: 0.25em 0;
+}
+
 .dark trix-toolbar {
     background-color: var(--color-zinc-800);
     border-color: var(--color-zinc-600);
@@ -112,4 +134,28 @@ select:focus[data-flux-control] {
 .dark trix-editor blockquote {
     border-left-color: var(--color-zinc-500);
     color: var(--color-zinc-400);
+}
+
+/* Trix output content dark mode (blog show page) */
+.dark .trix-content {
+    color: var(--color-zinc-100);
+}
+
+.dark .trix-content a {
+    color: var(--color-zinc-300);
+}
+
+.dark .trix-content blockquote {
+    border-left-color: var(--color-zinc-500);
+    color: var(--color-zinc-400);
+}
+
+.dark .trix-content pre {
+    background-color: var(--color-zinc-900);
+    color: var(--color-zinc-100);
+}
+
+.dark .trix-content h1,
+.dark .trix-content h2 {
+    color: var(--color-zinc-100);
 }
