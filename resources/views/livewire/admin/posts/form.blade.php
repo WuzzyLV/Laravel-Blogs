@@ -16,6 +16,7 @@
         <flux:field>
             <flux:label>Body</flux:label>
             <div
+                wire:ignore
                 x-data="{
                     body: @entangle('body'),
                     init() {
