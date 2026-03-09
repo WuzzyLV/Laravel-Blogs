@@ -23,7 +23,7 @@
                         editor.addEventListener('trix-change', () => {
                             this.body = editor.value;
                         });
-                        if (this.body) {
+                        if (this.body && !editor.value) {
                             editor.editor.insertHTML(this.body);
                         }
                     }
